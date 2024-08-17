@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Welcome to my website!</h2>
+
+<!-- Password Section -->
+<div id="passwordSection">
+  <label for="password">Enter Password:</label>
+  <input type="password" id="password">
+  <button onclick="validatePassword()">Submit</button>
+  <p id="passwordError" style="color: red;"></p>
+</div>
+
+<!-- Button to Show IP (Initially Hidden) -->
+<div id="ipSection" style="display: none;">
+  <button onclick="showIP()">Dash</button>
+  <p id="ip"></p>
+</div>
+
+<script>
+  function fetchIP() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://api.ipapi.com/api/check?access_key=YOUR_ACCESS_KEY", true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const ip = JSON.parse(xhr.responseText).ip;
+        // Store the IP address in local storage
+        localStorage.setItem('userIP', ip);
+      }
+    };
+    xhr.send();
+  }
+
+  // Call fetchIP when the page loads if there's no IP in local storage
+  if (!localStorage.getItem('userIP')) {
+    fetchIP();
+  }
+
+  function validatePassword() {
+    const passwordInput = document.getElementById('password').value;
+    const passwordError = document.getElementById('passwordError');
+
+    const correctPassword = '12345'; // Set your desired password here
+
+    if (passwordInput === correctPassword) {
+      // Password is correct, show the IP section and hide the password section
+      document.getElementById('passwordSection').style.display = 'none';
+      document.getElementById('ipSection').style.display = 'block';
+    } else {
+      // Password is incorrect, show an error message
+      passwordError.textContent = 'Incorrect password. Please try again.';
+    }
+  }
+
+  function showIP() {
+    // Retrieve the IP address from local storage
+    const userIP = localStorage.getItem('userIP');
+    if (userIP) {
+      document.getElementById("ip").innerHTML = userIP;
+    } else {
+      document.getElementById("ip").innerHTML = 'IP address not available.';
+    }
+  }
+</script>
+
+</body>
+</html>
